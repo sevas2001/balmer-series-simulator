@@ -150,9 +150,27 @@ export const SimulationCanvas: React.FC<SimulationCanvasProps> = ({ state }) => 
 
       // Visibility Calculation
       let visibility = line.baseOpacity * (1 - p * 0.8);
+
+      // Handle Active Transition Focus
+      if (state.activeTransition) {
+        const lineN = line.id === 'h-alpha' ? 3
+          : line.id === 'h-beta' ? 4
+            : line.id === 'h-gamma' ? 5
+              : line.id === 'h-delta' ? 6 : 0;
+
+        if (lineN !== state.activeTransition) {
+          visibility *= 0.1; // Dim others significantly
+        } else {
+          visibility = 1.0; // Highlight target
+        }
+      }
+
       if (line.id === 'h-delta') {
         const violetFactor = Math.max(0, 1 - (state.lightPollution / 50));
-        visibility = line.baseOpacity * violetFactor;
+        // If focusing on delta, ignore light pollution dimming a bit
+        if (state.activeTransition !== 6) {
+          visibility *= violetFactor;
+        }
       }
 
       if (visibility <= 0.01) return;
@@ -165,9 +183,9 @@ export const SimulationCanvas: React.FC<SimulationCanvasProps> = ({ state }) => 
         ctx.save();
 
         // Neon Glow
-        if (state.lightPollution < 60) {
+        if (state.lightPollution < 60 || state.activeTransition) {
           ctx.shadowColor = line.color;
-          ctx.shadowBlur = glowIntensity;
+          ctx.shadowBlur = state.activeTransition ? 20 : glowIntensity;
         }
 
         // Beam
