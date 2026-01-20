@@ -147,8 +147,8 @@ const Electron = ({ activeTransition }: { activeTransition: number | null }) => 
 
     return (
         <group>
-            <Trail width={0.1} length={8} color="#38bdf8" attenuation={(t) => t * t}>
-                <Sphere ref={electronRef} args={[0.1, 16, 16]}>
+            <Trail width={0.4} length={12} color="#38bdf8" attenuation={(t) => t}>
+                <Sphere ref={electronRef} args={[0.15, 16, 16]}>
                     <meshBasicMaterial color="#38bdf8" />
                 </Sphere>
             </Trail>

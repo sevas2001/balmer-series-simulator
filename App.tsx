@@ -36,10 +36,7 @@ const App: React.FC = () => {
             </div>
           </div>
           <div className="hidden sm:flex items-center gap-4">
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-900 rounded-md border border-slate-800">
-              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
-              <span className="text-xs text-slate-400 font-mono">SISTEMA: ONLINE</span>
-            </div>
+            {/* Removed System Online Indicator */}
             <span className="text-xs bg-indigo-950/50 text-indigo-300 px-3 py-1.5 rounded-md border border-indigo-500/20 font-semibold tracking-wider">
               FÍSICA EXPERIMENTAL III
             </span>
