@@ -15,6 +15,8 @@ const App: React.FC = () => {
     showExperimental: false,
     rydbergConstant: RYDBERG_THEORETICAL,
     activeTransition: null,
+    spectrumMode: 'atom',
+    moleculeTransition: 'electronic',
   });
 
   const handleStateChange = (newState: Partial<SimulationState>) => {
@@ -70,10 +72,14 @@ const App: React.FC = () => {
               <div className="p-4 mb-2 flex justify-between items-end border-b border-slate-800/50 pb-4">
                 <div>
                   <h3 className="font-bold text-slate-200 tracking-tight flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
-                    VISUALIZACIÓN DE DIFRACCIÓN
+                    <span className={`w-2 h-2 rounded-full ${simulationState.spectrumMode === 'atom' ? 'bg-indigo-500' : 'bg-emerald-500'}`}></span>
+                    {simulationState.spectrumMode === 'atom' ? 'VISUALIZACIÓN ATÓMICA (H)' : 'VISUALIZACIÓN MOLECULAR (H₂)'}
                   </h3>
-                  <p className="text-xs text-slate-500 font-mono mt-1">MODO: ESPECTRADA VS OBSERVADA</p>
+                  <p className="text-xs text-slate-500 font-mono mt-1">
+                    {simulationState.spectrumMode === 'atom'
+                      ? 'MODO: ESPECTRADA VS OBSERVADA'
+                      : `MODO: ${simulationState.moleculeTransition.toUpperCase()}`}
+                  </p>
                 </div>
                 <div className="text-right">
                   <p className="text-[10px] text-slate-500 uppercase tracking-widest font-semibold border border-slate-700 px-2 py-0.5 rounded">Rango Visible</p>

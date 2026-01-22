@@ -12,6 +12,10 @@ export interface SimulationState {
   showExperimental: boolean;
   rydbergConstant: number; // m^-1
   activeTransition: number | null; // n level (3, 4, 5, 6) or null for all
+
+  // New H2 Mode State
+  spectrumMode: 'atom' | 'molecule';
+  moleculeTransition: 'electronic' | 'vibrational' | 'rotational';
 }
 
 export interface ExperimentalData {

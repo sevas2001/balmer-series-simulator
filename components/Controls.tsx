@@ -10,12 +10,59 @@ interface ControlsProps {
 export const Controls: React.FC<ControlsProps> = ({ state, onChange }) => {
   return (
     <div className="bg-[#151B2B] p-4 rounded-lg shadow-md border border-slate-800 space-y-4">
-      <div>
+      <div className="border-b border-slate-700/50 pb-4">
         <h2 className="text-lg font-bold text-slate-100 flex items-center gap-2 mb-0.5 tracking-tight">
           <FlaskConical className="w-4 h-4 text-indigo-400" />
           Configuración
         </h2>
-        <p className="text-slate-400 text-xs">Ajusta los parámetros del experimento.</p>
+        <p className="text-slate-400 text-xs mb-3">Ajusta los parámetros del experimento.</p>
+
+        {/* Experiment Mode Toggle */}
+        <div className="flex bg-slate-900/50 p-1 rounded-lg border border-slate-700 mb-3">
+          <button
+            onClick={() => onChange({ spectrumMode: 'atom' })}
+            className={`flex-1 py-1.5 px-2 rounded-md text-xs font-semibold transition-all ${state.spectrumMode === 'atom'
+                ? 'bg-indigo-600 text-white shadow-sm'
+                : 'text-slate-400 hover:text-slate-200'
+              }`}
+          >
+            Átomo (H)
+          </button>
+          <button
+            onClick={() => onChange({ spectrumMode: 'molecule' })}
+            className={`flex-1 py-1.5 px-2 rounded-md text-xs font-semibold transition-all ${state.spectrumMode === 'molecule'
+                ? 'bg-emerald-600 text-white shadow-sm'
+                : 'text-slate-400 hover:text-slate-200'
+              }`}
+          >
+            Molécula (H₂)
+          </button>
+        </div>
+
+        {state.spectrumMode === 'molecule' && (
+          <div className="space-y-2 animate-in fade-in slide-in-from-top-1 duration-200">
+            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Transición</label>
+            <div className="grid grid-cols-3 gap-1">
+              {(['electronic', 'vibrational', 'rotational'] as const).map((type) => (
+                <button
+                  key={type}
+                  onClick={() => onChange({ moleculeTransition: type })}
+                  className={`py-1 px-1 rounded text-[10px] font-medium border transition-all ${state.moleculeTransition === type
+                      ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-400'
+                      : 'bg-slate-800/50 border-slate-700 text-slate-400 hover:bg-slate-800 hover:border-slate-600'
+                    }`}
+                >
+                  {type === 'electronic' ? 'Electrónica' : type === 'vibrational' ? 'Vibracional' : 'Rotacional'}
+                </button>
+              ))}
+            </div>
+            <p className="text-[10px] text-slate-500 italic mt-1">
+              {state.moleculeTransition === 'electronic' && "Bandas en rango visible."}
+              {state.moleculeTransition === 'vibrational' && "IR cercano. Representación escalada."}
+              {state.moleculeTransition === 'rotational' && "Microondas/IR lejano. Representación escalada."}
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Distance Slider */}

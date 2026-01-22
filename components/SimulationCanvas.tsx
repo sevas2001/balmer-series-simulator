@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { SimulationState } from '../types';
 import { THEORETICAL_LINES, EXPERIMENTAL_LINES, GRATING_PERIOD } from '../constants';
+import { H2_ELECTRONIC_LINES, H2_VIBRATIONAL_LINES, H2_ROTATIONAL_LINES } from '../constants-h2';
 
 interface SimulationCanvasProps {
   state: SimulationState;
@@ -115,15 +116,29 @@ export const SimulationCanvas: React.FC<SimulationCanvasProps> = ({ state }) => 
     // --- 2. TOP HALF: Theoretical Lines ---
     const glowIntensity = Math.max(0, 15 - (state.lightPollution * 0.2));
 
+    // Select lines based on mode
+    let linesToDraw = THEORETICAL_LINES;
+    if (state.spectrumMode === 'molecule') {
+      if (state.moleculeTransition === 'electronic') linesToDraw = H2_ELECTRONIC_LINES;
+      else if (state.moleculeTransition === 'vibrational') linesToDraw = H2_VIBRATIONAL_LINES;
+      else if (state.moleculeTransition === 'rotational') linesToDraw = H2_ROTATIONAL_LINES;
+    }
+
     // Sort lines by wavelength to handle spacing
-    const sortedLines = [...THEORETICAL_LINES].sort((a, b) => b.wavelength - a.wavelength);
+    const sortedLines = [...linesToDraw].sort((a, b) => b.wavelength - a.wavelength);
 
     // Simple staggered height logic
     // We will assign a "level" to each line: 0, 1, 2... based on proximity to neighbors
     const labelLevels: Record<string, number> = {};
     const drawnPositions: number[] = [];
 
-    sortedLines.forEach(line => {
+    sortedLines.forEach((line, idx) => {
+      // For H2, just use simple modulo index staggering
+      if (state.spectrumMode === 'molecule') {
+        labelLevels[line.wavelength] = idx % 3;
+        return;
+      }
+
       const pos = calculatePosition(line.wavelength, state.distance);
       // Check distance to already processed lines
       let level = 0;
@@ -152,7 +167,7 @@ export const SimulationCanvas: React.FC<SimulationCanvasProps> = ({ state }) => 
       let visibility = line.baseOpacity * (1 - p * 0.8);
 
       // Handle Active Transition Focus
-      if (state.activeTransition) {
+      if (state.activeTransition && state.spectrumMode === 'atom') {
         const lineN = line.id === 'h-alpha' ? 3
           : line.id === 'h-beta' ? 4
             : line.id === 'h-gamma' ? 5
